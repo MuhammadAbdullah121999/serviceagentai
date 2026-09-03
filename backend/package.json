@@ -1,0 +1,29 @@
+{
+  "name": "servicepilot-backend",
+  "version": "1.0.0",
+  "description": "ServicePilot AI Backend API",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "setup-db": "tsx setup-db.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.3.0",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.3.1",
+    "fastify": "^5.12.1",
+    "jsonwebtoken": "^9.1.2",
+    "pg": "^8.11.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/node": "^20.10.6",
+    "jsonwebtoken": "^9.0.2",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
