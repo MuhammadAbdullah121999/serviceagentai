@@ -1,40 +1,18 @@
 import { FastifyInstance } from 'fastify';
 import { verifyToken } from '../middleware/auth.js';
+import {
+  list, getOne, create, update, remove, stats, meta,
+} from '../controllers/requestController.js';
 
 export async function requestRoutes(fastify: FastifyInstance) {
-  // Get all requests for user (protected)
-  fastify.get(
-    '/requests',
-    { onRequest: [verifyToken] },
-    async (request, reply) => {
-      return { message: 'Get all requests - Coming soon' };
-    }
-  );
+  fastify.addHook('onRequest', verifyToken);
 
-  // Create new request (protected)
-  fastify.post(
-    '/requests',
-    { onRequest: [verifyToken] },
-    async (request, reply) => {
-      return { message: 'Create request - Coming soon' };
-    }
-  );
+  fastify.get('/requests/meta', meta);
+  fastify.get('/requests/stats', stats);
 
-  // Get single request (protected)
-  fastify.get(
-    '/requests/:id',
-    { onRequest: [verifyToken] },
-    async (request, reply) => {
-      return { message: 'Get request - Coming soon' };
-    }
-  );
-
-  // Update request (protected)
-  fastify.patch(
-    '/requests/:id',
-    { onRequest: [verifyToken] },
-    async (request, reply) => {
-      return { message: 'Update request - Coming soon' };
-    }
-  );
+  fastify.get('/requests', list);
+  fastify.post('/requests', create);
+  fastify.get('/requests/:id', getOne);
+  fastify.patch('/requests/:id', update);
+  fastify.delete('/requests/:id', remove);
 }

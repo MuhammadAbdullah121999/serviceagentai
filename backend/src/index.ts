@@ -10,6 +10,21 @@ async function start() {
     logger: true,
   });
 
+  // DELETE requests often send Content-Type: application/json with no body.
+  // Without this, Fastify rejects them with 400 before the handler runs.
+  fastify.addContentTypeParser(
+    'application/json',
+    { parseAs: 'string' },
+    (_req, body, done) => {
+      if (body === '' || body === undefined) return done(null, undefined);
+      try {
+        done(null, JSON.parse(body as string));
+      } catch (err) {
+        done(err as Error, undefined);
+      }
+    }
+  );
+
   // Register CORS
   await fastify.register(cors, {
     origin: ['http://localhost:3000', 'http://192.168.1.1:3000', '*'],
