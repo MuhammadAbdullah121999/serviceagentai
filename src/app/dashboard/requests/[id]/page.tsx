@@ -206,7 +206,7 @@ export default function RequestDetailPage() {
   const transitions = req.allowedTransitions ?? [];
   const canEdit = !['Completed', 'Archived'].includes(req.status);
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="max-w-3xl mx-auto space-y-6">
       {toast && (
         <div className="fixed top-20 right-6 z-50 flex items-center gap-2 bg-neutral-900 text-white text-sm px-4 py-2.5 rounded-lg shadow-lg">
           <Check size={16} className="text-emerald-400" />

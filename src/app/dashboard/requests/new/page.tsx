@@ -75,7 +75,7 @@ export default function NewRequestPage() {
     }`;
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-2xl mx-auto">
       <Link
         href="/dashboard/requests"
         className="inline-flex items-center gap-2 text-sm text-neutral-600 hover:text-primary-600 mb-6 transition-smooth"
