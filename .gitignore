@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# large source media - never commit originals
+*.mov
+ServicePilotAi/
+New media for missing/
+*-Video*.mp4
+*-Picture*.jpg
+pexels-*.jpg
+13859218_*.mp4

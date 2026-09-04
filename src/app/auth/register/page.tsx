@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
+import { ArrowLeft } from 'lucide-react';
 import { registerUser } from '@/lib/api';
 import { setAuthToken, setUser } from '@/lib/auth';
 
@@ -68,7 +70,27 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
-      <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+      <div className="max-w-md w-full">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-neutral-600 hover:text-primary-600 text-sm mb-6 transition-smooth"
+        >
+          <ArrowLeft size={16} />
+          Back to home
+        </Link>
+
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          <Link href="/" className="inline-flex items-center gap-2 mb-8">
+            <div className="relative w-9 h-9">
+              <Image
+                src="/images/brand/logo-icon.png"
+                alt="ServicePilot AI"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <span className="font-bold text-neutral-900">ServicePilot AI</span>
+          </Link>
         {/* Header */}
         <h1 className="text-3xl font-bold text-neutral-900 mb-2">Create Account</h1>
         <p className="text-neutral-600 mb-8">Join ServicePilot AI today</p>
@@ -163,6 +185,7 @@ export default function RegisterPage() {
             Sign In
           </Link>
         </p>
+        </div>
       </div>
     </div>
   );

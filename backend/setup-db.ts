@@ -1,36 +1,31 @@
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
-import pg from 'pg';
 
+dotenv.config();
 
-const { Pool } = pg;
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+import pool from './src/database/connection.js';
 
 async function setupDatabase() {
   try {
-    console.log('📦 Setting up database...');
-    
-    // Read schema file
+    console.log('Setting up database...');
+
     const schemaPath = path.join(process.cwd(), 'src/database/schema.sql');
     const schema = fs.readFileSync(schemaPath, 'utf-8');
-    
-    // Execute schema
+
     await pool.query(schema);
-    
-    console.log('✅ Database setup complete!');
-    console.log('✅ Tables created: users, service_requests');
-    console.log('✅ Indexes created');
-    
+
+    const tables = await pool.query(
+      `SELECT table_name FROM information_schema.tables
+       WHERE table_schema = 'public' ORDER BY table_name`
+    );
+
+    console.log('Done. Tables:', tables.rows.map(r => r.table_name).join(', '));
+  } catch (error: any) {
+    console.error('Setup failed:', error.message);
+    process.exitCode = 1;
+  } finally {
     await pool.end();
-    process.exit(0);
-  } catch (error) {
-    console.error('❌ Database setup failed:', error);
-    await pool.end();
-    process.exit(1);
   }
 }
 

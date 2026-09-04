@@ -1,44 +1,15 @@
 'use client';
 
 import React from 'react';
-import { 
-  Droplet, 
-  Zap, 
-  Wind, 
-  Home, 
-  Hammer, 
-  Palette, 
-  Layers, 
-  Sprout, 
-  Sparkles, 
-  Wrench,
-  AlertCircle,
-} from 'lucide-react';
-
-interface Category {
-  icon: React.ReactNode;
-  name: string;
-}
-
-const categories: Category[] = [
-  { icon: <Droplet size={28} />, name: 'Plumbing' },
-  { icon: <Zap size={28} />, name: 'Electrical' },
-  { icon: <Wind size={28} />, name: 'HVAC' },
-  { icon: <Home size={28} />, name: 'Roofing' },
-  { icon: <Hammer size={28} />, name: 'Carpentry' },
-  { icon: <Palette size={28} />, name: 'Painting' },
-  { icon: <Layers size={28} />, name: 'Flooring' },
-  { icon: <Sprout size={28} />, name: 'Landscaping' },
-  { icon: <Sparkles size={28} />, name: 'Cleaning' },
-  { icon: <Wrench size={28} />, name: 'General Maintenance' },
-  { icon: <AlertCircle size={28} />, name: 'Other' },
-];
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { showcaseCategories } from '@/lib/categories';
 
 export const ServiceCategoriesSection: React.FC = () => {
   return (
     <section id="categories" className="py-20 md:py-32 bg-neutral-50">
       <div className="container-responsive">
-        {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-h2 md:text-4xl mb-4 text-neutral-900 font-bold">
             Service Categories
@@ -48,23 +19,33 @@ export const ServiceCategoriesSection: React.FC = () => {
           </p>
         </div>
 
-        {/* Categories Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {categories.map((category, index) => (
-            <div
-              key={index}
-              className="bg-white p-6 rounded-lg border border-neutral-200 hover:border-primary-300 hover:shadow-md transition-smooth flex flex-col items-center text-center group cursor-pointer"
+          {showcaseCategories.map((category) => (
+            <Link
+              key={category.slug}
+              href={`/services/${category.slug}`}
+              className="group relative aspect-[4/3] rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-smooth"
             >
-              {/* Icon */}
-              <div className="text-primary-600 mb-4 group-hover:text-primary-700 group-hover:scale-110 transition-smooth">
-                {category.icon}
-              </div>
+              <Image
+                src={`/images/categories/${category.slug}.webp`}
+                alt={category.name}
+                fill
+                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                className="object-cover group-hover:scale-105 transition-smooth"
+              />
 
-              {/* Name */}
-              <h3 className="font-semibold text-neutral-900 text-sm">
-                {category.name}
-              </h3>
-            </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/90 via-neutral-900/25 to-transparent" />
+
+              <div className="absolute inset-x-0 bottom-0 p-4">
+                <h3 className="font-semibold text-white text-sm md:text-base mb-1">
+                  {category.name}
+                </h3>
+                <span className="flex items-center gap-1 text-xs text-white/0 group-hover:text-white/90 transition-smooth">
+                  Learn more
+                  <ArrowRight size={12} />
+                </span>
+              </div>
+            </Link>
           ))}
         </div>
       </div>

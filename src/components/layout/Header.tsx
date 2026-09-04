@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 
@@ -16,8 +17,14 @@ export const Header: React.FC = () => {
           href="/" 
           className="flex items-center gap-2 hover:opacity-80 transition-smooth"
         >
-          <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">SP</span>
+          <div className="relative w-10 h-10 flex items-center justify-center">
+            <Image
+              src="/images/brand/logo-icon.png"
+              alt="ServicePilot AI"
+              fill
+              className="object-contain"
+              priority
+            />
           </div>
           <span className="hidden sm:block">
             <div className="text-lg font-bold text-neutral-900">ServicePilot AI</div>
