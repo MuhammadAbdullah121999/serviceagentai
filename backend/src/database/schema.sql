@@ -30,3 +30,23 @@ CREATE TABLE IF NOT EXISTS service_requests (
 CREATE INDEX IF NOT EXISTS idx_user_requests ON service_requests(user_id);
 CREATE INDEX IF NOT EXISTS idx_status ON service_requests(status);
 CREATE INDEX IF NOT EXISTS idx_email ON users(email);
+
+-- Attachments: any file type, metadata in Postgres, binary in object storage
+CREATE TABLE IF NOT EXISTS request_attachments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  request_id UUID NOT NULL REFERENCES service_requests(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  original_filename VARCHAR(255) NOT NULL,
+  storage_key VARCHAR(500) NOT NULL,
+  storage_url VARCHAR(1000),
+  mime_type VARCHAR(150) NOT NULL,
+  file_size BIGINT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_attachment_request ON request_attachments(request_id);
+CREATE INDEX IF NOT EXISTS idx_attachment_user ON request_attachments(user_id);
+
+-- AI observability
+ALTER TABLE service_requests ADD COLUMN IF NOT EXISTS ai_analyzed_at TIMESTAMP;
+ALTER TABLE service_requests ADD COLUMN IF NOT EXISTS ai_model VARCHAR(100);

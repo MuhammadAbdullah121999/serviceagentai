@@ -1,5 +1,7 @@
 import { FastifyReply } from 'fastify';
 import { AuthenticatedRequest } from '../middleware/auth.js';
+import { analyzeRequest, isAiConfigured } from '../services/aiService.js';
+import { saveAiAnalysis } from '../services/requestService.js';
 import {
   listRequests, getRequestById, createRequest, updateRequest,
   deleteRequest, getStats, canTransition, allowedNextStatuses,
@@ -88,6 +90,18 @@ export const update = async (request: AuthenticatedRequest, reply: FastifyReply)
     const existing = await getRequestById(request.user!.userId, id);
     if (!existing) return reply.status(404).send({ error: 'Request not found' });
 
+    // Content is locked once a request reaches a terminal state.
+    // Status changes are still allowed so it can be reopened or archived.
+    const LOCKED = ['Completed', 'Archived'];
+    const editsContent = ['title', 'description', 'category', 'priority', 'location']
+      .some((f) => body[f] !== undefined);
+
+    if (editsContent && LOCKED.includes(existing.status)) {
+      return reply.status(400).send({
+        error: `A ${existing.status.toLowerCase()} request cannot be edited. Reopen it first.`,
+      });
+    }
+
     if (body.status !== undefined) {
       if (!STATUSES.includes(body.status)) {
         return reply.status(400).send({ error: `status must be one of: ${STATUSES.join(', ')}` });
@@ -148,4 +162,36 @@ export const meta = async (_request: AuthenticatedRequest, reply: FastifyReply) 
     priorities: PRIORITIES,
     categories: CATEGORIES,
   });
+};
+export const analyse = async (request: AuthenticatedRequest, reply: FastifyReply) => {
+  const { id } = request.params as { id: string };
+
+  const existing = await getRequestById(request.user!.userId, id);
+  if (!existing) return reply.status(404).send({ error: 'Request not found' });
+
+  if (!isAiConfigured()) {
+    return reply.status(503).send({
+      error: 'AI analysis is not available right now.',
+      retryable: false,
+    });
+  }
+
+  try {
+    const ai = await analyzeRequest(existing.title, existing.description);
+    const updated = await saveAiAnalysis(request.user!.userId, id, ai);
+
+    return reply.send({
+      request: { ...updated, allowedTransitions: allowedNextStatuses(updated!.status) },
+      suggestion: { category: ai.category, priority: ai.priority, confidence: ai.confidence },
+    });
+  } catch (err: any) {
+    request.log.error({ err }, 'AI analysis failed');
+    // The request itself is untouched — the client keeps everything it had
+    return reply.status(502).send({
+      error: err.message?.includes('timed out')
+        ? 'The AI service took too long to respond. Please try again.'
+        : 'AI analysis failed. Your request was not changed.',
+      retryable: true,
+    });
+  }
 };

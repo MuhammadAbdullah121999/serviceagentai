@@ -10,11 +10,17 @@
     "start": "node dist/index.js",
     "setup-db": "tsx setup-db.ts",
     "test-db": "tsx test-db.ts",
-    "test-api": "tsx test-api.ts"
+    "test-api": "tsx test-api.ts",
+    "test-ai": "tsx test-ai.ts",
+    "list-models": "tsx list-models.ts",
+    "test-raw": "tsx test-raw.ts"
   },
   "dependencies": {
     "@fastify/cors": "^11.3.0",
+    "@fastify/multipart": "^10.1.1",
+    "@google/generative-ai": "^0.24.1",
     "bcrypt": "^5.1.1",
+    "cloudinary": "^2.11.0",
     "dotenv": "^16.3.1",
     "fastify": "^5.12.1",
     "jsonwebtoken": "^9.1.2",

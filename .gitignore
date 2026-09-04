@@ -47,3 +47,8 @@ New media for missing/
 *-Picture*.jpg
 pexels-*.jpg
 13859218_*.mp4
+
+# dependencies (all levels)
+node_modules/
+**/node_modules/
+backend/node_modules/

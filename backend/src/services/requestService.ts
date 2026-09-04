@@ -17,9 +17,9 @@ export const CATEGORIES = [
 // Which statuses a request may move to from its current one
 const ALLOWED_TRANSITIONS: Record<string, string[]> = {
   'New':         ['In Progress', 'Archived'],
-  'In Progress': ['Completed', 'New', 'Archived'],
+  'In Progress': ['Completed', 'Archived'],
   'Completed':   ['Archived', 'In Progress'],
-  'Archived':    ['New'],
+  'Archived':    ['In Progress'],
 };
 
 export const canTransition = (from: string, to: string): boolean => {
@@ -176,4 +176,20 @@ export const getStats = async (userId: string) => {
     stats.total += r.count;
   });
   return stats;
+};
+
+export const saveAiAnalysis = async (
+  userId: string,
+  id: string,
+  ai: { category: string; priority: string; confidence: number; summary: string; next_action: string; model: string }
+  ) => {
+  const result = await pool.query(
+    `UPDATE service_requests
+     SET ai_summary = $1, ai_next_action = $2, ai_confidence = $3,
+         ai_model = $4, ai_analyzed_at = NOW(), updated_at = NOW()
+     WHERE id = $5 AND user_id = $6
+     RETURNING *`,
+    [ai.summary, ai.next_action, ai.confidence, ai.model, id, userId]
+  );
+  return (result.rows[0] as ServiceRequest) ?? null;
 };
