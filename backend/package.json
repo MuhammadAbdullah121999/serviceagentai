@@ -6,7 +6,6 @@
   "type": "module",
   "scripts": {
     "dev": "tsx src/index.ts",
-    "build": "tsc",
     "start": "tsx src/index.ts",
     "setup-db": "tsx setup-db.ts",
     "test-db": "tsx test-db.ts",
